@@ -1,0 +1,14 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Comandos basicos') {
+            steps {
+                sh 'echo "Ejecutando comandos de linux"'
+                sh 'whoami'
+                sh 'pwd'
+                sh 'ls -la'
+            }
+        } 
+    }
+}

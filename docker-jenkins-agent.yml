@@ -1,0 +1,19 @@
+services:
+  jenkins-agent:
+    image: jenkins-custom-agent:latest
+    container_name: jenkins-agent-1
+    user: root
+    environment:
+      JENKINS_URL: http://jenkins:8080
+      JENKINS_AGENT_NAME: agent-1
+      JENKINS_SECRET: b3eebb398bfc04f5bfe3ed7d1f4b7076de022e95b7d2e26c636d8955886d84f1
+      JENKINS_AGENT_WORKDIR: /home/jenkins/agent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    privileged: true
+    networks:
+      - agent-net
+networks:
+  agent-net:
+    external: true
+    name: jenkins-docker_default

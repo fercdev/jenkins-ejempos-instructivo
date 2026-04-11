@@ -1,0 +1,39 @@
+pipeline {
+    agent {
+        docker {
+            image 'node:20-alpine'
+        }
+    }
+    
+    stages {
+        stage('Clonar Repositorio') {
+            steps {
+                git 'https://github.com/fercdev/docker-build-node-mysql.git'
+            }
+        }
+
+        stage ('Listar Archivos') {
+            steps {
+                dir('node-api-sql') {
+                    sh 'ls -la'
+                }
+            }
+        }
+
+        stage ('Instalar Dependencias') {
+            steps {
+                dir('node-api-sql') {
+                    sh 'npm install'
+                }
+            }
+        }
+
+        stage ('Simular start') {
+            steps {
+                dir('node-api-sql') {
+                    sh 'npm start & sleep 5'
+                }
+            }
+        }
+    }
+}

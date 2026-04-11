@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    environment {
+        NOMBRE = "Luis Fernando"
+    }
+
+    stages {
+        stage("Inicio") {
+            steps {
+                echo "Hola ${NOMBRE}"
+            }
+        }
+
+        stage("Simulando un proceso") {
+            steps {
+                echo "Simulando un proceso con la variable ${NOMBRE}"
+            }
+        }
+
+        stage("Mensaje de fin") {
+            steps {
+                echo "Pipeline terminado"
+            }
+        }
+    }
+}

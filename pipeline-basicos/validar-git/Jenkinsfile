@@ -1,0 +1,11 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Verificar git') {
+            steps {
+                sh 'git --version'
+            }
+        }
+    }
+}
