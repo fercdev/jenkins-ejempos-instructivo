@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'NOMBRE', defaultValue: 'Mundo', description: 'Ingresa tu nombre')
+        text(name: 'MENSAJE', defaultValue: 'Texto de ejemplo largo', description: 'Ingresa un texto')
+        booleanParam(name: 'FLAG', defaultValue: true, description: 'Selecciona una opción')
+        choice(name: 'ENV', choices: ['dev', 'qa', 'prod'], description: 'Selecciona un ambiente')
+        password(name: 'PASSWORD', defaultValue: '', description: 'Ingresa una contraseña')
+    }
+ 
+    stages {
+        stage('Primero') {
+            steps {
+                echo 'Stage 1'
+            }
+        }
+
+        stage('Segundo') {
+            steps {
+                echo "Hola, ${params.NOMBRE}"
+                echo "Texto ingresado: ${params.MENSAJE}"
+                echo "Opción seleccionada: ${params.FLAG}"
+                echo "Opción de lista seleccionada: ${params.ENV}"
+                echo "Contraseña ingresada: ${params.PASSWORD}"
+            }
+
+        }
+    }
+
+    post {
+        success {
+            echo 'Esto se ejecuta si el pipeline es exitoso'
+        }
+    }   
+}

@@ -2,13 +2,14 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'nodejs-18'
+        nodejs 'node-20'
     }
     
     stages {
         stage('Stage tools-node') {
             steps {
                 sh 'node -v'
+                sh 'npm -v'
             }
         }
     }

@@ -1,0 +1,20 @@
+pipeline {
+    agent any
+
+    options {
+        timeout(time: 1, unit: 'MINUTES')
+        retry(3)     // para los reintentos
+        timestamps() // agregar timestamps a la salida de la consola
+        disableConcurrentBuilds() // evitar que se ejecuten builds concurrentes
+        buildDiscarder(logRotator(numToKeepStr: '3', daysToKeepStr: '7')) // conservar solo los últimos 3 builds o los builds de los últimos 7 días
+        skipDefaultCheckout() // evitar el checkout automático del código fuente
+    }   
+    
+    stages {
+        stage('Stage timeout') {
+            steps {
+                sleep 70
+            }
+        }
+    }
+}
