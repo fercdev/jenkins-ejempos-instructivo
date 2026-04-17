@@ -1,0 +1,15 @@
+pipeline {
+    agent any
+
+    tools {
+        nodejs 'nodejs-18'
+    }
+    
+    stages {
+        stage('Stage tools-node') {
+            steps {
+                sh 'node -v'
+            }
+        }
+    }
+}

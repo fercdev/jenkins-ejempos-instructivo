@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'NOMBRE', defaultValue: 'Mundo', description: 'Ingresa tu nombre')
+    }
+ 
+    stages {
+        stage('Primero') {
+            steps {
+                echo 'Stage 1'
+            }
+        }
+
+        stage('Segundo') {
+            steps {
+                echo "Hola, ${params.NOMBRE}"
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Esto se ejecuta si el pipeline es exitoso'
+        }
+    }   
+}

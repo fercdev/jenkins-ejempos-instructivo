@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    parameters {
+        booleanParam(name: 'EJECUTAR', defaultValue: true)
+    }
+ 
+    stages {
+        stage('Stage condicional') {
+            when {
+                expression { return params.EJECUTAR }
+            }
+            steps {
+                echo 'Stage 1 ejecutada... con una condicional'
+            }
+        }
+
+        stage('Stage alternativo') {
+            when {
+                not {
+                    expression { return params.EJECUTAR }
+                }
+            }
+            steps {
+                echo 'Stage 2 ejecutada... con una condicional inversa'
+            }
+    
+        }
+    }
+}

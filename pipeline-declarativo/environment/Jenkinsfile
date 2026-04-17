@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+
+    environment {
+        APP = 'application-demo'
+        VAR2 = 'Segunda variable de entorno'
+    }
+
+    stages {
+        stage('Primero') {
+            steps {
+                echo 'Stage 1'
+            }
+        }
+
+        stage('Segundo') {
+            steps {
+                echo "Application: ${APP}"
+                echo "Var2: ${VAR2}"
+            }
+        }
+
+        stage('Tercero') {
+            steps {
+                echo 'Stage 3'
+                echo 'Stage 3.1'
+                echo 'Stage 3.2'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Esto se ejecuta siempre'
+        }
+
+        success {
+            echo 'Esto se ejecuta si el pipeline es exitoso'
+        }
+
+        failure {
+            echo 'Esto se ejecuta si el pipeline falla'
+        }
+    }   
+}

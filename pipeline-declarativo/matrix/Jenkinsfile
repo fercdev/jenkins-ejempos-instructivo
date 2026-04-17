@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Matrix Build') {
+            matrix {
+                axes {
+                    axis {
+                        name 'NODE'
+                        values '16', '18', '20'
+                    }
+                }
+
+                stages {
+                    stage('Testing con versiones de node') {
+                        steps {
+                            echo "Building with Node.js ${NODE}..."
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('paso final') {
+            steps {
+                echo 'Final Step...'
+            }
+        }
+    }
+}

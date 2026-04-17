@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Automated Build') {
+            parallel {
+                stage('Stage A') {
+                    steps {
+                        echo 'Building Stage A...'
+                    }
+                }
+                stage('Stage B') {
+                    steps {
+                        echo 'Building Stage B...'
+                    }
+                }
+            }
+        }
+
+        stage('paso final') {
+            steps {
+                echo 'Final Step...'
+            }
+        }
+    }
+}
