@@ -1,24 +1,318 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificación de Build - Jenkins</title>
     <style>
-        body { font-family: Arial;}
-        .card {
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 10px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .success { color: green; }
-        .fail { color: red; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f4f6f9;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .email-container {
+            max-width: 650px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .status-banner {
+            padding: 25px 30px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            border-bottom: 3px solid;
+        }
+        
+        .status-banner.SUCCESS {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #28a745;
+        }
+        
+        .status-banner.FAILURE {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #dc3545;
+        }
+        
+        .status-banner.UNSTABLE {
+            background-color: #fff3cd;
+            color: #856404;
+            border-color: #ffc107;
+        }
+        
+        .status-banner.ABORTED {
+            background-color: #e2e3e5;
+            color: #383d41;
+            border-color: #6c757d;
+        }
+        
+        .status-icon {
+            font-size: 32px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .info-section {
+            margin-bottom: 25px;
+        }
+        
+        .info-section h2 {
+            color: #2c5282;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2c5282;
+            padding-left: 12px;
+        }
+        
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .info-table tr {
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .info-table tr:last-child {
+            border-bottom: none;
+        }
+        
+        .info-table td {
+            padding: 12px 15px;
+        }
+        
+        .info-table td:first-child {
+            font-weight: 600;
+            color: #495057;
+            width: 35%;
+            background-color: #e9ecef;
+        }
+        
+        .info-table td:last-child {
+            color: #212529;
+        }
+        
+        .action-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #2c5282 0%, #1a365d 100%);
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        
+        .action-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 13px;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .footer p {
+            margin: 5px 0;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: #dee2e6;
+            margin: 25px 0;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge.SUCCESS {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .badge.FAILURE {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .badge.UNSTABLE {
+            background-color: #ffc107;
+            color: #000;
+        }
+        
+        .badge.ABORTED {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                border-radius: 0;
+            }
+            
+            .header, .content, .footer {
+                padding: 20px;
+            }
+            
+            .info-table td {
+                display: block;
+                width: 100%;
+            }
+            
+            .info-table td:first-child {
+                background-color: transparent;
+                font-size: 12px;
+                padding-bottom: 5px;
+            }
+            
+            .info-table td:last-child {
+                padding-top: 0;
+                padding-bottom: 15px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2 class="${buildStatus}">Resultado del Pipeline</h2>
-        <p><b>Proyecto:</b> ${projectName}</p>
-        <p><b>Build Number:</b> ${buildNumber}</p>
-        <p><b>Estado:</b> ${buildStatus}</p>
-        <p><b>Build URL:</b> <a href="${buildUrl}">${buildUrl}</a></p>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <span>🔧</span> Jenkins Pipeline
+            </h1>
+            <p class="subtitle">Notificación Automática de Build</p>
+        </div>
+        
+        <!-- Status Banner -->
+        <div class="status-banner ${buildStatus}">
+            <span class="status-icon">
+                <!-- Los iconos se pueden cambiar según el estado en el Jenkinsfile -->
+            </span>
+            Build ${buildStatus}
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <div class="info-section">
+                <h2>📋 Información del Build</h2>
+                <table class="info-table">
+                    <tr>
+                        <td>Proyecto</td>
+                        <td><strong>${projectName}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Número de Build</td>
+                        <td>#${buildNumber}</td>
+                    </tr>
+                    <tr>
+                        <td>Estado</td>
+                        <td><span class="badge ${buildStatus}">${buildStatus}</span></td>
+                    </tr>
+                    <tr>
+                        <td>Rama</td>
+                        <td>${branchName}</td>
+                    </tr>
+                    <tr>
+                        <td>Iniciado por</td>
+                        <td>${startedBy}</td>
+                    </tr>
+                    <tr>
+                        <td>Duración</td>
+                        <td>${buildDuration}</td>
+                    </tr>
+                    <tr>
+                        <td>Timestamp</td>
+                        <td>${timestamp}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="info-section">
+                <h2>📝 Cambios Recientes</h2>
+                <table class="info-table">
+                    <tr>
+                        <td>Último Commit</td>
+                        <td>${lastCommit}</td>
+                    </tr>
+                    <tr>
+                        <td>Autor</td>
+                        <td>${commitAuthor}</td>
+                    </tr>
+                    <tr>
+                        <td>Mensaje</td>
+                        <td>${commitMessage}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div style="text-align: center;">
+                <a href="${buildUrl}" class="action-button">
+                    🔗 Ver Detalles del Build
+                </a>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Jenkins Automation Server</strong></p>
+            <p>Este es un mensaje automático. Por favor no responder a este correo.</p>
+            <p>© ${currentYear} - Sistema de Integración Continua</p>
+        </div>
     </div>
 </body>
 </html>
