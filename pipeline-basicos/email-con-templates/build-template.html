@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body { font-family: Arial;}
+        .card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .success { color: green; }
+        .fail { color: red; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 class="${buildStatus}">Resultado del Pipeline</h2>
+        <p><b>Proyecto:</b> ${projectName}</p>
+        <p><b>Build Number:</b> ${buildNumber}</p>
+        <p><b>Estado:</b> ${buildStatus}</p>
+        <p><b>Build URL:</b> <a href="${buildUrl}">${buildUrl}</a></p>
+    </div>
+</body>
+</html>

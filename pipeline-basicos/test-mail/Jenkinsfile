@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('test-correo') {
+            steps {
+                script {
+                    emailext(
+                        from: 'lcruzfarfan@gmail.com',
+                        to: 'lcruzfarfan@gmail.com',
+                        subject: 'TEST',
+                        body: 'Hola desde Jenkins!!!'
+                    )
+                }
+            }
+        }
+    }
+}

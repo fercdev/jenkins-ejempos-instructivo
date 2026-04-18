@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Ejecutando build'
+            }
+        }
+
+        stage('Print envs') {
+            steps {
+                echo "JOB_NAME: ${env.JOB_NAME}"
+                echo "BUILD_ID: ${env.BUILD_ID}"
+                echo "BUILD_NUMBER: ${env.BUILD_NUMBER}"
+                echo "BUILD_URL: ${env.BUILD_URL}"
+
+                echo "GIT_COMMIT: ${env.GIT_COMMIT}"
+                echo "GIT_BRANCH_NAME: ${env.GIT_BRANCH_NAME}"
+                echo "GIT_URL: ${env.GIT_URL}"
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                def html = readFile('/var/jenkins_home/email-templates/build-template.html')
+
+                html = html.replace('${projectName}', env.JOB_NAME)
+                html = html.replace('${buildNumber}', env.BUILD_NUMBER)
+                html = html.replace('${buildStatus}', currentBuild.currentResult)
+                html = html.replace('${buildUrl}', env.BUILD_URL)
+
+
+                 emailext(
+                    from: 'lcruzfarfan@gmail.com',
+                    to: 'lcruzfarfan@gmail.com',
+                    subject: "Resultado del build",
+                    mimeType: 'text/html',
+                    body: html
+                )
+            }           
+        }
+    }
+}
